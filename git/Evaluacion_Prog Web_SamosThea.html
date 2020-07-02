@@ -1,45 +1,122 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" href="css/style.css" />
-	<title>Subir archivo CSV en PHP</title>
 
-	<script src="js/cargar.js"></script>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Thea Ivana Samos">
+
+  <title style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; ">CSV Files</title>
+
 </head>
+
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+
 <body>
 
-	<!-- contenedor -->
-	<main id="contenedor">
-		<!-- formulario -->
-		<section class="formulario">
-			
-			<!-- -->
-			<header>
-				<h1>Formulario para subir archivo CSV</h1>
-			</header>
-			<!-- -->
-			
-			<!-- -->
-			<section>
-				<form name="frmSubirCSV" id="frmSubirCSV" method="post" enctype="multipart/form-data">
-					<p><img src="images/file.png" alt="" class="imagen"></p>
-					<h2>Subir archivo CSV</h2>
-					<p><input type="file" name="archivo_csv" id="archivo_csv"></p>
-					<p><input type="submit" class="enviar_archivo separar_boton" value="Enviar archivo"></p>
+  <header>
+    <div class="alert alert-info">
+      <h3 class="text-center"> Visualizing CSV Files </h3>
+    </div>
+  </header>
 
-					<div id="estado"></div>
+  <div id="main">
+    <p >Select CSV File:
+      <input type="file" id="files" name="files[]" accept=".csv" multiple onchange="return validarExt()"/>
+      <div id="visorArchivo">
+      <!-- The preview is displayed here-->
+      </div>
+    </p>
 
-				</form>
+    <script>
+      function handleFileSelect(evt) {
+        var files = evt.target.files; // FileList object
 
-			</section>
-			<!-- -->
+        // files is a FileList of File objects. List some properties.
+        var output = [];
+        for (var i = 0, f; f = files[i]; i++) {
 
-		</section>
-		<!-- ./formulario -->
+          output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                      f.size, ' bytes, last modified: ',
+                      f.lastModifiedDate.toLocaleDateString(), '</li>');
+        }
+        document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+      }
 
-	</main>
-	<!-- ./contenedor -->
+      document.getElementById('files').addEventListener('change', handleFileSelect, false);
+    </script>
 
-</body>
+  </div>
+
+  <br>
+
+  <div id="drop_zone" class="dropdownfiles">Drag & Drop CSV File Here</div>
+  
+  <output id="list"></output>
+
+  
+  
+  <script>
+    function handleFileSelect(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+  
+      var files = evt.dataTransfer.files; 
+      var output = [];
+      for (var i = 0, f; f = files[i]; i++) {
+        output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                    f.size, ' bytes, last modified: ',
+                    f.lastModifiedDate.toLocaleDateString(), '</li>');
+      }
+      document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+    }
+  
+    function handleDragOver(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+      evt.dataTransfer.dropEffect = 'copy'; 
+    }
+    
+    var dropZone = document.getElementById('drop_zone');
+    dropZone.addEventListener('dragover', handleDragOver, false);
+    dropZone.addEventListener('drop', handleFileSelect, false);
+  </script>
+
+  </body>
 </html>
+
+<script type="text/javascript">
+        
+  function validarExt()
+  {
+      var archivoInput = document.getElementById('archivoInput');
+      var archivoRuta = archivoInput.value;
+      var extPermitidas = /(.pdf|.csv|.png|.jpg)$/i;
+      
+      if(!extPermitidas.exec(archivoRuta))
+      {
+          alert('Tipo de archivo no permitido');
+          archivoInput.value='';
+          return false;
+      }
+
+      else
+      {
+          if(archivoInput.files && archivoInput.files[0])
+          {
+              alert('Archivo Cargado, Espere');
+              var visor = new FileReader();
+              visor.onload=function(e)
+              {
+                  document.getElementById('visorArchivo').innerHTML=
+                  '<embed src="'+e.target.result+'" width="500" heigth="500" >';                    
+              };
+              visor.readAsDataURL(archivoInput.files[0]);
+          }
+      } 
+  }
+
+</script>
