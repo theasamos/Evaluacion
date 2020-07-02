@@ -1,0 +1,14 @@
+
+
+  .dropdownfiles {
+    padding: 10px;
+    border: 2px solid rgb(204, 204, 204);
+  }
+
+  #drop_zone {
+    border: 2px dashed #bbb;
+    border-radius: 5px;
+    padding: 25px;
+    text-align: center;
+    color: #bbb;
+  }
